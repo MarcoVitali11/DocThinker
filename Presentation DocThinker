@@ -1,0 +1,286 @@
+\documentclass{beamer}
+
+% --- Impostazioni Generali ---
+\usetheme{Warsaw} % Tema formale
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{hyperref}
+
+% --- Customizzazione UNIFI (BLU) ---
+% Definisci un blu scuro formale (Dark Blue / Navy)
+\definecolor{unifiblue}{RGB}{0, 51, 102} % Un blu scuro, formale
+\definecolor{highlightblue}{RGB}{0, 102, 204} % Un blu più chiaro per gli accenti
+
+% Applica i colori al tema Beamer
+\setbeamercolor{title page header}{fg=white,bg=unifiblue} % Titolo in bianco su blu scuro
+\setbeamercolor{section in head/foot}{fg=white,bg=unifiblue} % Intestazione sezione blu scuro
+\setbeamercolor{palette primary}{fg=white,bg=unifiblue} % Usato per i blocchi/footers
+\setbeamercolor{palette secondary}{fg=white,bg=unifiblue}
+\setbeamercolor{palette tertiary}{fg=black,bg=white}
+\setbeamercolor{frametitle}{fg=unifiblue,bg=white} % Titolo slide in blu scuro
+\setbeamercolor{itemize item}{fg=highlightblue} % Punti elenco in blu acceso
+
+% --- Informazioni Presentazione ---
+\title[Presentazione Articolo]{DocThinker: Explainable Multimodal Large Language Models with Rule-based
+Reinforcement Learning for Document Understanding}
+\subtitle{Wenwen Yu, Zhibo Yang, Yuliang Liu, Xiang Bai}
+\author{Marco VItali}
+\institute[UNIFI]{
+  Università degli Studi di Firenze \\
+  Corso di Laurea in Data Science, Calcolo Scientifico \& Intelligenza Artificiale \\
+  B033612 (B241) - NATURAL LANGUAGE PROCESSING 2025-2026
+}
+\date{\today}
+
+\begin{document}
+
+% =========================================================
+% Slide 1: Frontespizio/Titolo
+% =========================================================
+\begin{frame}
+  \titlepage
+\end{frame}
+
+% =========================================================
+% Slide 2: Indice
+% =========================================================
+\begin{frame}{Indice}
+  \tableofcontents
+\end{frame}
+
+% --- Il resto della struttura delle sezioni rimane invariato ---
+
+\section{Introduzione e Obiettivi}
+
+\begin{frame}{1.1 Contesto}
+  Gli MLLM hanno dimostrato grandi performance nel document understanding, ma hanno ancora certe limitazioni:
+  \begin{itemize}
+    \item \textbf{Black-box:} si ha poca fiducia in ambiti ad alto rischio, come quello medico, finanziario o legale.
+    \item \textbf{CoT statiche e SFT:} soffrono di catastrophic forgetting, scarsa adattabilità e limitata generalizzazione.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{1.2 Presentazione del Framework e Obiettivi}
+  Per cercare di colmare queste lacune viene presentato \textbf{DocThinker}, ovvero un nuovo framework di Rule-Based Reinforcement Learning 
+  \begin{itemize}
+    \item Apprendimento dinamico della policy.
+    \item Vincolo KL.
+    \item Risultati intermedi più compensibili per l'uomo.
+  \end{itemize}
+  Obiettivi:
+    \begin{itemize}
+    \item Mitigare il catastrophic forgetting.
+    \item Migliorare Adattabilità, Trasparenza e Generalizzazione.
+  \end{itemize}
+\end{frame}
+
+\section{Approccio Proposto}
+
+\begin{frame}{2.1 Tecniche di Ragionamento CoT}
+  \begin{itemize}
+    \item \textbf{ReFocus:} Framework basato sulla modifica visiva che migliora la comprensione di tabelle e grafici e introduce la \textit{modifica attiva delle immagini}.
+    \item \textbf{Visual CoT:} Framework con passi visivi che introduce una pipeline di elaborazione multi-turn e adotta un metodo di focalizzazione visiva guidata.
+    \item \textbf{MVoT:} Genera \textit{tracce di ragionamento visive e testuali intercalate} migliorando la trasparenza ma non la capacità di ragionamento.
+    \item \textbf{The Mind's Eye of LLMs:} Sollecita il ragionamento spaziale generando rappresentazioni visive dei processi di pensiero, si applica molto alla navigazione ma ha una generalizzazione molto limitata per il document understanding.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{2.2 Reinforcement Learning}
+  \begin{itemize}
+    \item \textbf{DeepSeek-R1:} Dimostra che l'apprendimento basato su RL può incentivare comportamenti di ragionamento emergente ottenendo buone prestazioni anche su compiti elaborati.
+    \item \textbf{MedVLM-R1:} Applica il RL a modelli visivo-linguisici in medicina e mostra che \textit{migliorano la trasparenza e la generalizzazione}.
+    \item \textbf{Visual-RFT:} Introduce il Visual Reinforcement Fine-Tuning migliorando i ragionamenti visivo-linguistici, inoltre mostra miglioramenti significativi nell'efficienza dei dati, nel riconoscimento di oggetti few-shot e nel grounding di ragionamento.
+  \end{itemize} 
+\end{frame}
+
+\begin{frame}{2.3 DocThinker}
+  Nonostante gli evidenti risultati ottenuti applicando il RL alle strategie di ragionamento degli MLLM, questa è un'area ancora abbastanza inesplorata, in particolare per quanto riguarda la progettazione di funzioni di ricompensa efficaci. \\
+  Qui entra in gioco DocThinker:
+  \begin{itemize}
+    \item Funzioni di ricompensa multi-obiettivo.
+    \item Domande riformulate.
+    \item Regions of Interest.
+    \item Apprendimento della policy tramite l'algoritmo GRPO.
+    \item Vincolo KL.
+    \item Consente l'autorevisione e la correzione.
+  \end{itemize} 
+\end{frame}
+
+\begin{frame}{2.4 Lavori Correlati}
+  Esistono altri lavori correlati in cui i modelli MLLM, quali LLaVAR, DocLLM e DocPedia, cercano di portare migliorie nel document understanding, ma si evidenzia una forte necessità di un framework di ragionamento adattivo. \\
+  Per questo motivo in altri modelli viene applicato il RL come alternativa e con questi lavori si dimostra il suo successo nelle task visivo-linguistiche, da qui e dalla sopracitata mancanza di esplorazione di questo ambito nasce DocThinker.
+\end{frame}
+
+\section{Struttura del Modello}
+
+\begin{frame}{3.1 Algoritmo GRPO}
+Framework di RL che non richiede un modello critic, eliminando costi computazionali e instabilità, confrontando un gruppo di risposte candidate.
+  \begin{itemize}
+    \item Da una domanda q il modello precedente $\pi_{OLD}$ genera un gruppo di G risposte candidate \{$O_1$,...,$O_G$\}
+    \item Si valutano le risposte con funzioni di ricompensa R(q,O) ottenendo le ricompense \{$r_1$,...,$r_G$\}
+    \item Le ricompense vengono normalizzate creando dei vantaggi \{$A_1$,...,$A_G$\} e si pone per ogni token t della sequenza di risposta $A_{i,t}=A_i$
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{3.1 Algoritmo GRPO}
+  \begin{itemize}
+    \item Si calcola la Loss come $$L_{GRPO}(\theta)=-\frac{1}{G}\sum_{i=1}^{G}\frac{1}{|O_i|}\sum_{t=1}^{|O_i|}[\frac{\pi_{\theta}(O_{i,t}|q,O_{i,<t})}{\varphi[\pi_{\theta}(O_{i,t}|q,O_{i,<t})]}A_{i,t}+$$ \\
+    $$-\beta D_{KL}(\pi_{\theta}||\pi_{ref})]$$
+    \item Backpropagation e aggiornamento dei pesi
+  \end{itemize}
+\end{frame}
+    
+\begin{frame}{3.2 Modello Base e Prompt Template}
+  \begin{itemize}
+    \item Il modello di base utilizzato è Qwen2.5-VL nelle varianti 3B e 7B, un modello linguistico multimodale all'avanguardia.
+    \item Il Prompt Template è strutturato per istruire il modello a fornire una traccia di ragionamento ed una risposta codificati in tag simili a XML del tipo $<$think$>$, $<$/think$>$ e $<$answer$>$, $<$/answer$>$.
+    \item La risposta finale è formattata in JSON e contiene 3 campi fondamentali:
+    \begin{itemize}
+        \item \textbf{rephrase\_question}
+        \item \textbf{bbox\_2d}
+        \item \textbf{final\_answer}
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{3.3 Funzioni di Ricompensa Multi-Obiettivo}
+Gli approcci tradizionali si basano su feedback umani, DocThinker utilizza invece il Reinforcement Learning with Verifiable Rewards basandosi su 4 criteri fondamentali:
+\begin{itemize}
+    \item \textbf{Format Reward} $R_{format}$
+    \item \textbf{Accuracy Reward} $R_{accuracy}$
+    \item \textbf{RoI IoU Reward} $R_{RoI}$
+    \item \textbf{Rephrase Question Reward} $R_{rephrase}$
+\end{itemize}
+\end{frame}
+
+\begin{frame}{3.3 Funzioni di Ricompensa Multi-Obiettivo}
+ $R_{format}$, $R_{accuracy}$ e $R_{RoI}$ possono valere 1 nel caso in cui le condizioni imposte sono rispettate o 0 altrimenti, mentre $R_{rephrase}=s+r$ se $R_{accuracy}=1$ e 0 altrimenti, dove s rappresenta la cosine similarity tra la domanda originale e quella riformulata e r il numero di parole nuove rispetto a quelle totali nella domanda riformulata. \\
+Infine la funzione di ricompensa finale $R_{tot}$ si calcola come $$R_{tot}=\lambda_1R_{format}+\lambda_2R_{accuracy}+\lambda_3R_{RoI}+\lambda_4R_{rephrase}$$ ponendo $\lambda_{i}=1$ per ogni $i\in\{1;2;3;4\}$
+\end{frame}
+
+\section{Esperimenti}
+
+\begin{frame}{4.1 Dataset e dettagli}
+Il dataset per l'addestramento è utilizzato è VisualCoT, il quale contiene 438000 coppie domanda-risposta con regioni chiave evidenziate e ricopre diversi domini. \\
+Vengono prese 2 configurazioni di questo dataset:
+\begin{itemize}
+    \item \textbf{4data4k:} 4x1000 campioni da:
+    \begin{itemize}
+        \item DocVQA
+        \item InfographicsVQA
+        \item TextCaps
+        \item TextVQA
+    \end{itemize}
+    \item \textbf{8data8k:} campioni di 4data4k + 4x1000 campioni da:
+    \begin{itemize}
+        \item Flickr30k
+        \item GQA
+        \item Open Images
+        \item VSR
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{4.1 Dataset e dettagli}
+Il modello di base viene addestrato con:
+\begin{itemize}
+    \item 2 Epoche
+    \item 8 GPU NVIDIA A100 da 80GB
+    \item Batch Size=2
+    \item Numero di Risposte Candidate G=6
+    \item Ottimizzatore AdamW
+    \item Learning Rate $10^{-6}$
+    \item Coefficiente KL $\beta=0.04$
+\end{itemize}
+La valutazione avviene secondo il protocollo di valutazione di VisualCoT che prevede anche l'utilizzo di dataset zero-shot, quali SROIE, DUDE e Visual7W e avviene tramite le metriche standard fornite dal VisualCoT Benchmark.
+\end{frame}
+
+\begin{frame}{4.2 Risultati Principali}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.9\linewidth]{Risultati_Principali.png}
+\end{figure}
+La valutazione avviene principalmente su due tipologie di compiti:
+\begin{itemize}
+    \item \textbf{Compiti orientati al document undestranding}
+    \item \textbf{Compiti di comprensione multimodale generale}
+\end{itemize}
+Si notano miglioramenti significativi in entrambi i casi, in particolare nel primo, e una forte capacità di generalizzazione.        
+\end{frame}
+
+\begin{frame}{4.3 Altri Risultati}
+Gli esperimenti mostrano risultati competitivi per ogni task, anche sui dati zero-shot dove supera tutti i modelli non basati su RL, mostrando grandi capacità di generalizzazione e adattabilità. \\
+Viene svolta una valutazione anche sul dataset TextREC che richiede la localizzazione di oggetti basandosi sulle richieste del testo.
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{Altri_Risultati.png}
+\end{figure}
+\end{frame}
+
+\begin{frame}{4.3 Altri Risultati}
+I risultati mostrano come anche modelli specializzati come TAMN e MDETR vengono superati, rendendo chiaro che DocThinker eccelle nel ragionamento spaziale ed allinea efficacemente le informazioni testuali e visive, andando oltre il document understanding.
+\end{frame}
+
+\begin{frame}{4.4 Studi di ablazione}
+Vengono svolti anche degli studi di ablazione sulle funzioni di ricompensa e sulla divergenza KL sui dataset DocVQA, TextCaps, TextVQA e InfoQA. \\
+Negli studi sulle funzioni di ricompensa vengono eliminati:
+\begin{itemize}
+    \item $R_{RoI}$
+    \item $R_{rephrase}$
+    \item Sia $R_{RoI}$ che $R_{rephrase}$
+\end{itemize}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.9\linewidth]{Studi_Ablazione_1.png}
+\end{figure}
+\end{frame}
+
+\begin{frame}{4.4 Studi di ablazione}
+\begin{itemize}
+    \item Eliminando $R_{RoI}$ si nota un calo delle performance soprattutto in TextCaps e InfoQA evidenziando un ruolo importante nei compiti che richiedono un grounding visivo.
+    \item Eliminando $R_{rephrase}$ il calo si nota principalmente su TextVQA e DocVQA espimendo un ruolo più importante nel chiarire le domande ambigue.
+    \item Eliminando sia $R_{RoI}$ che $R_{rephrase}$ si nota un degrado generale che sottolinea la crucialità delle ricompense multi-obiettivo per migliorare il ragionamento.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{4.4 Studi di ablazione}
+Per lo studio dell'ablazione sulla divergenza KL si prova a porre semplicemente il coefficiente KL $\beta=0$ poi $\beta=0.001$.
+\begin{figure}
+    \centering
+    \includegraphics[width=0.9\linewidth]{Studi_Ablazione_2.png}
+\end{figure}
+Con $\beta=0$ si nota un calo generico delle prestazioni che evidenzia il ruolo fondamentale nel prevenire il catastrophic forgetting e rendere stabile l'addestramento. \\
+con $\beta=0.001$ si riscontra un leggero miglioramento rispetto al caso precedente ma senza raggiungere la stabilità iniziale. 
+\end{frame}
+
+\section{Conclusioni}
+
+\begin{frame}{Conclusioni}
+Il GRPO, grazie alle funzioni di ricompensa multi-obiettivo, supera le limitazioni del ragionamento statico basato su CoT e SFT. \\
+Si conclude che DocThinker ottiene prestazioni migliori o altamente competitive sui benchmark standard rispetto ai precedenti modelli basati su SFT in molti compiti di document understanding.
+\end{frame}
+
+\begin{frame}{References}
+\begin{itemize}
+    \item DocThinker: Explainable Multimodal Large Language Models with Rule-based Reinforcement Learning for Document Understanding - Wenwen Yu, Zhibo Yang, Yuliang Liu, Xiang Bai
+    \item ChatGPT
+    \item YouTube - Filippo Zanella - LLM vs MLLM: L'IA Capisce Davvero le Immagini? (Esperimento Reale!) 
+    \item Che cos'è la messa a punto? - IBM - https://www.ibm.com
+\end{itemize}
+\end{frame}
+
+% =========================================================
+% Slide Finale: Ringraziamenti
+% =========================================================
+\begin{frame}
+  \centering
+  \vspace{1cm}
+  \textbf{\Large Grazie per l'attenzione!}
+  \vspace{1cm}
+\end{frame}
+
+\end{document}
